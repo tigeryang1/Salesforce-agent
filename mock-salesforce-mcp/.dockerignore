@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+tests/
+*.egg-info/
+server.out.log
+server.err.log
+pytest-cache-files-*

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "opp_us_001",
+    "account_id": "acct_us_001",
+    "stage": "Proposal",
+    "close_date": "2026-04-15"
+  },
+  {
+    "id": "opp_us_002",
+    "account_id": "acct_us_001",
+    "stage": "Negotiation",
+    "close_date": "2026-05-03"
+  },
+  {
+    "id": "opp_eu_001",
+    "account_id": "acct_eu_001",
+    "stage": "Qualification",
+    "close_date": "2026-04-28"
+  }
+]

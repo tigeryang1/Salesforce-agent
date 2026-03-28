@@ -1,0 +1,26 @@
+[
+  {
+    "id": "acct_us_001",
+    "name": "Nike US",
+    "org_id": "US",
+    "region": "US",
+    "tier": "Enterprise",
+    "risk_score": 0.82
+  },
+  {
+    "id": "acct_eu_001",
+    "name": "Nike EU",
+    "org_id": "EU",
+    "region": "EU",
+    "tier": "Enterprise",
+    "risk_score": 0.71
+  },
+  {
+    "id": "acct_us_002",
+    "name": "Acme Advertising",
+    "org_id": "US",
+    "region": "US",
+    "tier": "SMB",
+    "risk_score": 0.35
+  }
+]

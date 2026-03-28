@@ -1,0 +1,26 @@
+[
+  {
+    "id": "camp_us_001",
+    "account_id": "acct_us_001",
+    "name": "Spring Sale US",
+    "status": "Active",
+    "budget": 100000,
+    "monthly_spend": 80000
+  },
+  {
+    "id": "camp_eu_001",
+    "account_id": "acct_eu_001",
+    "name": "Spring Sale EU",
+    "status": "Active",
+    "budget": 85000,
+    "monthly_spend": 62000
+  },
+  {
+    "id": "camp_us_002",
+    "account_id": "acct_us_002",
+    "name": "Retargeting Q2",
+    "status": "Paused",
+    "budget": 40000,
+    "monthly_spend": 18000
+  }
+]

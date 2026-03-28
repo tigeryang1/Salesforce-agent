@@ -1,0 +1,39 @@
+[
+  {
+    "token": "tok_alice_us",
+    "session_id": "sess_001",
+    "principal_id": "alice",
+    "org_id": "US",
+    "region": "US",
+    "auth_state": "authenticated",
+    "approved_tool_set": [
+      "search_advertiser",
+      "search_global",
+      "resolve_company_context",
+      "create_support_case",
+      "update_campaign_budget",
+      "optimize_campaign"
+    ],
+    "account_scope": [
+      "acct_us_001",
+      "acct_us_002"
+    ]
+  },
+  {
+    "token": "tok_eva_eu",
+    "session_id": "sess_002",
+    "principal_id": "eva",
+    "org_id": "EU",
+    "region": "EU",
+    "auth_state": "authenticated",
+    "approved_tool_set": [
+      "search_advertiser",
+      "search_global",
+      "resolve_company_context",
+      "create_support_case"
+    ],
+    "account_scope": [
+      "acct_eu_001"
+    ]
+  }
+]

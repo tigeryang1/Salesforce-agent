@@ -1,0 +1,32 @@
+[project]
+name = "salesforce-agent"
+version = "0.1.0"
+description = "LangGraph multi-agent client for Salesforce MCP server."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "langchain>=1.0.0",
+  "langgraph>=1.0.0",
+  "langchain-openai>=0.1.0",
+  "langchain-google-genai>=2.1.0",
+  "langchain-mcp-adapters>=0.1.0",
+  "fastapi>=0.115.0",
+  "uvicorn>=0.30.0",
+  "python-dotenv>=1.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["agents"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

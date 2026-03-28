@@ -1,0 +1,16 @@
+[
+  {
+    "id": "case_us_001",
+    "account_id": "acct_us_001",
+    "subject": "Billing discrepancy",
+    "priority": "High",
+    "status": "Open"
+  },
+  {
+    "id": "case_eu_001",
+    "account_id": "acct_eu_001",
+    "subject": "Campaign underdelivery",
+    "priority": "Medium",
+    "status": "Open"
+  }
+]
