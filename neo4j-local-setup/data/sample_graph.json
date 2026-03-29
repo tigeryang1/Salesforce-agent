@@ -1,0 +1,192 @@
+{
+  "accounts": [
+    {
+      "id": "acct_us_001",
+      "name": "Acme Retail",
+      "industry": "Retail",
+      "region": "US",
+      "tier": "Enterprise",
+      "status": "Active"
+    },
+    {
+      "id": "acct_us_002",
+      "name": "Bright Foods",
+      "industry": "CPG",
+      "region": "US",
+      "tier": "Mid-Market",
+      "status": "Active"
+    },
+    {
+      "id": "acct_eu_001",
+      "name": "Nordic Sports",
+      "industry": "Sporting Goods",
+      "region": "EU",
+      "tier": "Enterprise",
+      "status": "Prospect"
+    }
+  ],
+  "contacts": [
+    {
+      "id": "cont_001",
+      "account_id": "acct_us_001",
+      "first_name": "Amy",
+      "last_name": "Chen",
+      "email": "amy.chen@acmeretail.example",
+      "title": "VP Marketing"
+    },
+    {
+      "id": "cont_002",
+      "account_id": "acct_us_002",
+      "first_name": "Raj",
+      "last_name": "Patel",
+      "email": "raj.patel@brightfoods.example",
+      "title": "Director of Ecommerce"
+    },
+    {
+      "id": "cont_003",
+      "account_id": "acct_eu_001",
+      "first_name": "Lina",
+      "last_name": "Meyer",
+      "email": "lina.meyer@nordicsports.example",
+      "title": "Head of Growth"
+    }
+  ],
+  "users": [
+    {
+      "id": "user_001",
+      "name": "Maya Johnson",
+      "role": "Account Executive",
+      "region": "US"
+    },
+    {
+      "id": "user_002",
+      "name": "Victor Alvarez",
+      "role": "Customer Success Manager",
+      "region": "US"
+    },
+    {
+      "id": "user_003",
+      "name": "Sofia Berg",
+      "role": "Sales Director",
+      "region": "EU"
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "opp_001",
+      "account_id": "acct_us_001",
+      "owner_user_id": "user_001",
+      "name": "Acme Expansion FY26",
+      "stage": "Proposal",
+      "amount": 250000,
+      "close_date": "2026-05-15",
+      "status": "Open"
+    },
+    {
+      "id": "opp_002",
+      "account_id": "acct_us_002",
+      "owner_user_id": "user_001",
+      "name": "Bright Foods Upsell",
+      "stage": "Negotiation",
+      "amount": 140000,
+      "close_date": "2026-04-20",
+      "status": "Open"
+    },
+    {
+      "id": "opp_003",
+      "account_id": "acct_eu_001",
+      "owner_user_id": "user_003",
+      "name": "Nordic Sports Pilot",
+      "stage": "Qualification",
+      "amount": 90000,
+      "close_date": "2026-06-01",
+      "status": "Open"
+    }
+  ],
+  "cases": [
+    {
+      "id": "case_001",
+      "account_id": "acct_us_001",
+      "owner_user_id": "user_002",
+      "subject": "Billing discrepancy",
+      "priority": "High",
+      "status": "Open",
+      "opened_at": "2026-03-10"
+    },
+    {
+      "id": "case_002",
+      "account_id": "acct_eu_001",
+      "owner_user_id": "user_003",
+      "subject": "Campaign underdelivery",
+      "priority": "Medium",
+      "status": "Escalated",
+      "opened_at": "2026-03-18"
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "camp_001",
+      "account_id": "acct_us_001",
+      "name": "Spring Promo US",
+      "status": "Active",
+      "budget": 120000,
+      "channel": "Paid Social"
+    },
+    {
+      "id": "camp_002",
+      "account_id": "acct_us_002",
+      "name": "Retail Media Pilot",
+      "status": "Planned",
+      "budget": 70000,
+      "channel": "Display"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task_001",
+      "subject": "Review Q2 media plan",
+      "status": "Open",
+      "due_date": "2026-04-02",
+      "opportunity_id": "opp_001",
+      "case_id": null
+    },
+    {
+      "id": "task_002",
+      "subject": "Escalation follow-up",
+      "status": "In Progress",
+      "due_date": "2026-03-31",
+      "opportunity_id": null,
+      "case_id": "case_002"
+    }
+  ],
+  "campaign_influence": [
+    {
+      "campaign_id": "camp_001",
+      "opportunity_id": "opp_001"
+    },
+    {
+      "campaign_id": "camp_002",
+      "opportunity_id": "opp_002"
+    }
+  ],
+  "opportunity_contacts": [
+    {
+      "opportunity_id": "opp_001",
+      "contact_id": "cont_001"
+    },
+    {
+      "opportunity_id": "opp_002",
+      "contact_id": "cont_002"
+    },
+    {
+      "opportunity_id": "opp_003",
+      "contact_id": "cont_003"
+    }
+  ],
+  "account_hierarchy": [
+    {
+      "parent_account_id": "acct_us_001",
+      "child_account_id": "acct_us_002"
+    }
+  ]
+}

@@ -74,6 +74,9 @@ Use one of the tokens in `fixtures/users.json`:
 - This mock intentionally does not call Salesforce.
 - The implementation is stable enough for client integration and workflow demos.
 - It is not production-hardening or full protocol compliance work.
+- If you set `MOCK_SF_PREFER_NEO4J=true`, the server will try to load Account, Campaign, Opportunity, and Case data from the local `neo4j-local-setup` HTTP API first.
+- The API base URL is controlled by `MOCK_SF_GRAPH_API_URL` and defaults to `http://127.0.0.1:8001`.
+- If the local graph API is unavailable or returns no usable data, it falls back to the local fixture JSON files.
 
 ## LangGraph agent project
 
