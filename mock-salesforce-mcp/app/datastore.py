@@ -7,7 +7,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 from uuid import uuid4
 
 from app.utility.fixtures import load_json
@@ -60,11 +60,19 @@ class DataStore:
         except Exception:  # noqa: BLE001
             return None
 
-    def _request_json(self, path: str) -> dict[str, Any]:
+    def _request_json(
+        self, path: str, *, method: str = "GET", payload: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         base_url = os.getenv("MOCK_SF_GRAPH_API_URL", "http://127.0.0.1:8001").rstrip("/")
         target = f"{base_url}{path}"
+        request_body = None
+        headers: dict[str, str] = {}
+        if payload is not None:
+            request_body = json.dumps(payload).encode("utf-8")
+            headers["Content-Type"] = "application/json"
+        request = Request(target, data=request_body, headers=headers, method=method)
         try:
-            with urlopen(target, timeout=5) as response:  # noqa: S310
+            with urlopen(request, timeout=5) as response:  # noqa: S310
                 return json.loads(response.read().decode("utf-8"))
         except (HTTPError, URLError) as exc:
             raise RuntimeError(f"Graph API request failed for {target}: {exc}") from exc

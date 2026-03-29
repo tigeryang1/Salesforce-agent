@@ -39,6 +39,14 @@ class DiscoveryService:
                 fallback_matches.append(account)
         return exact_matches or fallback_matches
 
+    def _graph_validate(self, payload: dict) -> dict | None:
+        if not self.store._truthy_env("MOCK_SF_PREFER_NEO4J"):
+            return None
+        try:
+            return self.store._request_json("/intent/validate", method="POST", payload=payload)
+        except Exception:  # noqa: BLE001
+            return None
+
     def resolve_company_context(self, token: str, query: str) -> dict:
         session = get_session(self.store, token)
         enforce_tool_scope(session, "resolve_company_context")
@@ -134,7 +142,7 @@ class DiscoveryService:
         if top["object"] != "Account" and top["score"] < 0.75:
             validation_failures.append("No dominant business object was detected from the query.")
 
-        return {
+        result = {
             "query": query,
             "entity_id": account.id,
             "entity_name": account.name,
@@ -166,6 +174,39 @@ class DiscoveryService:
                 else None
             ),
         }
+        graph_validation = self._graph_validate(
+            {
+                "account_id": account.id,
+                "account_name": account.name,
+                "query": query,
+                "primary_object": result["primary_object"],
+                "related_objects": result["related_objects"],
+                "candidates": result["candidates"],
+            }
+        )
+        if graph_validation and graph_validation.get("available"):
+            result["validation"]["graph"] = graph_validation
+            if graph_validation.get("validated") is False:
+                result["validation"]["ok"] = False
+                result["validation"]["failures"].append(
+                    f"Neo4j did not find supporting {result['primary_object']} evidence for the account."
+                )
+                result["needs_clarification"] = True
+            if graph_validation.get("suggested_primary_object") and graph_validation.get(
+                "suggested_primary_object"
+            ) != result["primary_object"]:
+                result["validation"]["suggested_primary_object"] = graph_validation[
+                    "suggested_primary_object"
+                ]
+            if graph_validation.get("related_objects"):
+                merged_related = result["related_objects"] + list(graph_validation["related_objects"])
+                result["related_objects"] = list(dict.fromkeys(merged_related))
+            if graph_validation.get("evidence"):
+                result["validation"]["graph_evidence"] = graph_validation["evidence"]
+            result["primary_confidence"] = round(
+                min(0.99, result["primary_confidence"] + 0.08), 2
+            ) if graph_validation.get("validated") else result["primary_confidence"]
+        return result
 
     def search_advertiser(self, token: str, query: str) -> dict:
         session = get_session(self.store, token)

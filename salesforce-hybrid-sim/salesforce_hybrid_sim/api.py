@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 
 from salesforce_hybrid_sim.config import get_settings
+from salesforce_hybrid_sim.intent_validator import GraphIntentValidator
 from salesforce_hybrid_sim.neo4j_projector import Neo4jProjector
 from salesforce_hybrid_sim.seed_data import SEED_DATA
 from salesforce_hybrid_sim.sqlite_store import SQLiteStore
@@ -46,10 +48,25 @@ def _format_campaign(row: dict) -> dict:
     return payload
 
 
+class IntentValidationRequest(BaseModel):
+    account_id: str
+    account_name: str
+    query: str
+    primary_object: str
+    related_objects: list[str]
+    candidates: list[dict]
+
+
 def create_app() -> FastAPI:
     app = FastAPI(title="Salesforce Hybrid Sim", version="0.1.0")
     settings = get_settings()
     store = SQLiteStore(settings.sqlite_path)
+    app.state.intent_validator = GraphIntentValidator(
+        settings.neo4j_uri,
+        settings.neo4j_username,
+        settings.neo4j_password,
+        settings.neo4j_database,
+    )
 
     @app.get("/healthz")
     def healthz() -> dict:
@@ -70,6 +87,31 @@ def create_app() -> FastAPI:
     def sync_graph() -> dict:
         projector = Neo4jProjector(settings.neo4j_uri, settings.neo4j_username, settings.neo4j_password, settings.neo4j_database)
         return {"synced": True, "counts": projector.sync_all(store.projection_bundle())}
+
+    @app.post("/intent/validate")
+    def validate_intent(payload: IntentValidationRequest) -> dict:
+        try:
+            result = app.state.intent_validator.validate(
+                account_id=payload.account_id,
+                account_name=payload.account_name,
+                query=payload.query,
+                primary_object=payload.primary_object,
+                related_objects=payload.related_objects,
+                candidates=payload.candidates,
+            )
+        except Exception as exc:  # noqa: BLE001
+            return {
+                "available": False,
+                "validated": False,
+                "primary_object": payload.primary_object,
+                "query": payload.query,
+                "account_id": payload.account_id,
+                "account_name": payload.account_name,
+                "error": str(exc),
+                "evidence": [],
+                "needs_clarification": True,
+            }
+        return result
 
     @app.get("/accounts")
     def accounts() -> dict:

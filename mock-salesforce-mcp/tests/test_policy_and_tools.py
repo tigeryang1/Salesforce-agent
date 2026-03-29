@@ -46,6 +46,48 @@ def test_resolve_company_context_requires_clarification_for_broad_query() -> Non
     assert result["clarification_question"]
 
 
+def test_resolve_company_context_merges_graph_validation(monkeypatch) -> None:
+    monkeypatch.setenv("MOCK_SF_PREFER_NEO4J", "true")
+    discovery = build_discovery()
+
+    def fake_graph_validate(payload: dict) -> dict:
+        return {
+            "available": True,
+            "validated": True,
+            "primary_object": payload["primary_object"],
+            "related_objects": ["Contact"],
+            "evidence": ["2 Opportunity record(s) are linked to the account."],
+            "suggested_primary_object": "Opportunity",
+        }
+
+    monkeypatch.setattr(discovery, "_graph_validate", fake_graph_validate)
+    result = discovery.resolve_company_context("tok_alice_us", "Show me Nike US deals and pipeline")
+    assert result["validation"]["graph"]["validated"] is True
+    assert "Contact" in result["related_objects"]
+    assert result["validation"]["graph_evidence"]
+
+
+def test_resolve_company_context_marks_failure_when_graph_disagrees(monkeypatch) -> None:
+    monkeypatch.setenv("MOCK_SF_PREFER_NEO4J", "true")
+    discovery = build_discovery()
+
+    def fake_graph_validate(payload: dict) -> dict:
+        return {
+            "available": True,
+            "validated": False,
+            "primary_object": payload["primary_object"],
+            "related_objects": [],
+            "evidence": [],
+            "suggested_primary_object": "Account",
+        }
+
+    monkeypatch.setattr(discovery, "_graph_validate", fake_graph_validate)
+    result = discovery.resolve_company_context("tok_alice_us", "Show me Nike US deals and pipeline")
+    assert result["validation"]["ok"] is False
+    assert result["needs_clarification"] is True
+    assert result["validation"]["suggested_primary_object"] == "Account"
+
+
 def test_create_support_case_success() -> None:
     tools = build_tools()
     result = tools.create_support_case(

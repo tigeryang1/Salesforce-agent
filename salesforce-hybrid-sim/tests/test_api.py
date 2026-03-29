@@ -50,3 +50,38 @@ def test_related_resources_include_nested_account_refs(monkeypatch) -> None:
     assert campaign["account"]["id"] == campaign["account_id"]
     assert opportunity["account"]["id"] == opportunity["account_id"]
     assert case["account"]["id"] == case["account_id"]
+
+
+def test_intent_validate_uses_graph_validator(monkeypatch) -> None:
+    db_path = db_path_for_test()
+    monkeypatch.setenv("SQLITE_PATH", str(db_path))
+    app = create_app()
+
+    class FakeValidator:
+        def validate(self, **kwargs):
+            return {
+                "available": True,
+                "validated": True,
+                "primary_object": kwargs["primary_object"],
+                "account_id": kwargs["account_id"],
+                "evidence": ["Graph evidence found."],
+                "needs_clarification": False,
+            }
+
+    app.state.intent_validator = FakeValidator()
+    client = TestClient(app)
+    response = client.post(
+        "/intent/validate",
+        json={
+            "account_id": "acct_us_001",
+            "account_name": "Acme Retail",
+            "query": "Show me deals for Acme Retail",
+            "primary_object": "Opportunity",
+            "related_objects": ["Account"],
+            "candidates": [{"object": "Opportunity", "score": 0.9, "reason": "deal keywords"}],
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["validated"] is True
+    assert response.json()["evidence"] == ["Graph evidence found."]
